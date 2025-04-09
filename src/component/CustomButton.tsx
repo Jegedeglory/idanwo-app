@@ -1,6 +1,5 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { View } from 'react-native';
 
 type CustomButtonProps = {
   title: string;
@@ -40,7 +39,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    marginVertical: 100,
+    marginVertical: 80,
+    position: "relative",
   },
   buttonText: {
     fontSize: 16,
