@@ -46,7 +46,7 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ route, navigation }) => {
         <View style={{ margin: 10 }}></View>
         <View style={styles.questionCard}>
           <Text style={styles.questionText}>
-            In what year did the United States host the FIFA World Cup for the
+            {/* In what year did the United States host the FIFA World Cup for the
             first time?
           </Text>
         </View>
@@ -69,11 +69,34 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ route, navigation }) => {
               ) : (
                 <View style={styles.radioButton} />
               )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+                    In what year did the United States host the FIFA World Cup for the
+        first time?
+          </Text>
+        </View>
+
+        <View style={styles.answersContainer}>
+          {options.map((option, index) => (
+        <TouchableOpacity
+          key={index}
+          style={[
+            styles.answerOption,
+            selectedOption === index && styles.selectedOption,
+          ]}
+          onPress={() => handleOptionPress(index)}
+        >
+          <Text style={styles.answerText}>{option}</Text>
+          {selectedOption === index ? (
+            <View style={styles.checkIcon}>
+          <MaterialIcons name="check" size={18} color="white" />
+            </View>
+          ) : (
+            <View style={styles.radioButton} />
+          )}
+        </TouchableOpacity>
           ))}
         </View>
 
-        {/* Next Button */}
         <TouchableOpacity
           style={styles.nextButton}
           onPress={() => navigation.navigate("Profile")}
