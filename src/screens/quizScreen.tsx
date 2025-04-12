@@ -4,6 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from './InitialScreen';
 import { MaterialIcons } from '@expo/vector-icons';
+import CircularTimer from '../component/Timer';
 
 type DetailsScreenProps = {
   route: RouteProp<RootStackParamList, 'Details'>;
@@ -33,12 +34,17 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ route, navigation }) => {
       {/* <Text style={styles.title}>{title}</Text>
       <Text>{itemId}</Text> */}
 
-        <View style={styles.timerContainer}>
+        {/* <View style={styles.timerContainer}>
           <View style={styles.timer}>
             <Text style={styles.timerText}>30</Text>
           </View>
-        </View>
-        
+        </View> */}
+
+<CircularTimer
+        duration={60} // Duration in seconds
+        size={200}    // Size of the circle in pixels
+        strokeWidth={20} // Thickness of the progress line
+      />
         <View style={styles.questionCard}>
           <Text style={styles.questionText}>
             In what year did the United States host the FIFA World Cup for the first time?
