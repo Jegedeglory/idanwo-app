@@ -24,13 +24,13 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
-.env
 
 # macOS
 .DS_Store
 *.pem
 
 # local env files
-.env.*
+.env*.local
+
 # typescript
 *.tsbuildinfo
