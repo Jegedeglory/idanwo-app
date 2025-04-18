@@ -11,17 +11,24 @@ type ProfileScreenProps = {
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const topUsers = [
-    { id: 2, name: 'John Doe', score: '760', avatar: { uri: 'https://via.placeholder.com/100' }, isTop: true },
-    { id: 1, name: 'David James', score: '980', avatar: { uri: 'https://via.placeholder.com/100' } },
-    { id: 3, name: 'Michael', score: '700', avatar: { uri: 'https://via.placeholder.com/100' } },
+    { id: 2, name: 'Michael', score: '760', avatar: { uri: 'https://img.icons8.com/fluency/96/queen.png' } },
+    { id: 1, name: 'David James', score: '980',  avatar: { uri: 'https://img.icons8.com/fluency/96/crown.png' }, isTop: true},
+    { id: 3, name: 'John Doe', score: '700', avatar: { uri: 'https://img.icons8.com/fluency/96/rook.png' } },
   ];
 
   const otherUsers = [
-    { id: 4, name: 'Smith Carol', score: '6/10', avatar: { uri: 'https://via.placeholder.com/40' } },
-    { id: 5, name: 'Harry', score: '5/10', avatar: { uri: 'https://via.placeholder.com/40' } },
-    { id: 6, name: 'Jon', score: '4/10', avatar: { uri: 'https://via.placeholder.com/40' } },
-    { id: 7, name: 'Ken', score: '3/10', avatar: { uri: 'https://via.placeholder.com/40' } },
-    { id: 8, name: 'Potter', score: '2/10', avatar: { uri: 'https://via.placeholder.com/40' } },
+    { id: 4, name: 'Smith Carol', score: '6/10', avatar: { uri: 'https://img.icons8.com/fluency/96/knight.png' } },
+    { id: 5, name: 'Harry', score: '5/10', avatar: { uri: 'https://img.icons8.com/fluency/96/bishop.png' } },
+    { id: 6, name: 'Jon', score: '4/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
+    { id: 7, name: 'Ken', score: '3/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
+    { id: 8, name: 'Potter', score: '2/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
+    { id: 9, name: 'Stephen', score: '1/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
+    { id: 10, name: 'Mason', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
+    { id: 11, name: 'Lucas', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
+    { id: 12, name: 'Liam', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
+    { id: 13, name: 'Noah', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
+    { id: 14, name: 'Oliver', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
+    { id: 15, name: 'Elijah', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
   ];
   return (
     <SafeAreaView style={styles.container}>

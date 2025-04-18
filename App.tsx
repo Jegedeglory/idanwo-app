@@ -42,7 +42,7 @@ export default function App() {
         <Stack.Screen 
           name="Profile" 
           component={ProfileScreen} 
-          options={{ title: 'User Profile' }}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
