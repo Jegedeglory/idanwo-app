@@ -1,35 +1,153 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  SafeAreaView, 
+  ScrollView, 
+  Image, 
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert
+} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from './InitialScreen';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';
+
+type User = {
+  id: number;
+  name: string;
+  score: string;
+  avatar: { uri: string };
+  isTop?: boolean;
+};
 
 type ProfileScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Profile'>;
 };
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
-  const topUsers = [
-    { id: 2, name: 'Michael', score: '760', avatar: { uri: 'https://img.icons8.com/fluency/96/queen.png' } },
-    { id: 1, name: 'David James', score: '980',  avatar: { uri: 'https://img.icons8.com/fluency/96/crown.png' }, isTop: true},
-    { id: 3, name: 'John Doe', score: '700', avatar: { uri: 'https://img.icons8.com/fluency/96/rook.png' } },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [topUsers, setTopUsers] = useState<User[]>([]);
+  const [otherUsers, setOtherUsers] = useState<User[]>([]);
 
-  const otherUsers = [
-    { id: 4, name: 'Smith Carol', score: '6/10', avatar: { uri: 'https://img.icons8.com/fluency/96/knight.png' } },
-    { id: 5, name: 'Harry', score: '5/10', avatar: { uri: 'https://img.icons8.com/fluency/96/bishop.png' } },
-    { id: 6, name: 'Jon', score: '4/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
-    { id: 7, name: 'Ken', score: '3/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
-    { id: 8, name: 'Potter', score: '2/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
-    { id: 9, name: 'Stephen', score: '1/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
-    { id: 10, name: 'Mason', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
-    { id: 11, name: 'Lucas', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
-    { id: 12, name: 'Liam', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
-    { id: 13, name: 'Noah', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
-    { id: 14, name: 'Oliver', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
-    { id: 15, name: 'Elijah', score: '0/10', avatar: { uri: 'https://img.icons8.com/fluency/96/cancel.png' } },
-  ];
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/users/leaderboard');
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          // Process the leaderboard data
+          const processedData = data.map((user, index) => ({
+            id: index + 1,
+            name: user.username,
+            score: user.score.toString(),
+            avatar: { 
+              uri: getAvatarForRank(index + 1)
+            },
+            isTop: index === 0
+          }));
+
+          // Split into top 3 and others
+          if (processedData.length > 0) {
+            const top = processedData.slice(0, 3);
+            // Ensure we have exactly 3 top users
+            while (top.length < 3) {
+              top.push({
+                id: top.length + 1,
+                name: 'No Player',
+                score: '0',
+                avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' }
+              });
+            }
+
+            // Sort top users to have winner in the middle
+            const sortedTop = [
+              top[1], // 2nd place on left
+              top[0], // 1st place in middle
+              top[2]  // 3rd place on right
+            ];
+
+            setTopUsers(sortedTop);
+            setOtherUsers(processedData.slice(3));
+          } else {
+            // Fallback to sample data if no users
+            setDefaultUsers();
+          }
+        } else {
+          // Fallback to sample data if response is not an array
+          setDefaultUsers();
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+        setDefaultUsers();
+        setLoading(false);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
+
+  const getAvatarForRank = (rank: number): string => {
+    switch (rank) {
+      case 1:
+        return 'https://img.icons8.com/fluency/96/crown.png';
+      case 2:
+        return 'https://img.icons8.com/fluency/96/queen.png';
+      case 3:
+        return 'https://img.icons8.com/fluency/96/rook.png';
+      case 4:
+        return 'https://img.icons8.com/fluency/96/knight.png';
+      case 5:
+        return 'https://img.icons8.com/fluency/96/bishop.png';
+      default:
+        return rank <= 9 
+          ? 'https://img.icons8.com/fluency/96/pawn.png'
+          : 'https://img.icons8.com/fluency/96/cancel.png';
+    }
+  };
+
+  const setDefaultUsers = () => {
+    const defaultTopUsers = [
+      { id: 2, name: 'Michael', score: '760', avatar: { uri: 'https://img.icons8.com/fluency/96/queen.png' } },
+      { id: 1, name: 'David James', score: '980',  avatar: { uri: 'https://img.icons8.com/fluency/96/crown.png' }, isTop: true},
+      { id: 3, name: 'John Doe', score: '700', avatar: { uri: 'https://img.icons8.com/fluency/96/rook.png' } },
+    ];
+
+    const defaultOtherUsers = [
+      { id: 4, name: 'Smith Carol', score: '6/10', avatar: { uri: 'https://img.icons8.com/fluency/96/knight.png' } },
+      { id: 5, name: 'Harry', score: '5/10', avatar: { uri: 'https://img.icons8.com/fluency/96/bishop.png' } },
+      { id: 6, name: 'Jon', score: '4/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
+      { id: 7, name: 'Ken', score: '3/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
+      { id: 8, name: 'Potter', score: '2/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
+      { id: 9, name: 'Stephen', score: '1/10', avatar: { uri: 'https://img.icons8.com/fluency/96/pawn.png' } },
+    ];
+
+    setTopUsers(defaultTopUsers);
+    setOtherUsers(defaultOtherUsers);
+  };
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Leaderboard</Text>
+          <View style={styles.placeholder} />
+        </View>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#FFFFFF" />
+          <Text style={styles.loadingText}>Loading leaderboard...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -107,6 +225,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#5C8D89',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginTop: 10,
   },
   header: {
     flexDirection: 'row',

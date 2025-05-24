@@ -1,11 +1,11 @@
-import React from "react";
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TextInput, Alert } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import CustomButton from "../component/CustomButton";
 
 export type RootStackParamList = {
   InitialScreen: undefined;
-  Details: { itemId: number; title: string; firstText: string };
+  Details: { itemId: number; title: string; firstText: string; username: string };
   Profile: undefined;
 };
 
@@ -14,6 +14,48 @@ type InitialScreenProps = {
 };
 
 const InitialScreen: React.FC<InitialScreenProps> = ({ navigation }) => {
+  const [username, setUsername] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleStartQuiz = async () => {
+    if (!username.trim()) {
+      Alert.alert("Error", "Please enter your name to continue");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Register the user with the backend
+      const response = await fetch("http://localhost:3001/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: username.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to register user");
+      }
+
+      // Navigate to the quiz screen with the username
+      navigation.navigate("Details", {
+        itemId: 123,
+        title: username,
+        firstText: `${0}/${20}`,
+        username: username.trim(),
+      });
+    } catch (error) {
+      console.error("Error registering user:", error);
+      Alert.alert("Error", "Failed to register. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.eclipse}>
@@ -31,21 +73,19 @@ const InitialScreen: React.FC<InitialScreenProps> = ({ navigation }) => {
             style={styles.inputBox}
             placeholder="Your Name"
             placeholderTextColor="#aaaaaa"
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
           />
         </View>
       </View>
       <View style={{ width: "80%" }}>
         <CustomButton
-          title="Start Quiz"
+          title={isLoading ? "Loading..." : "Start Quiz"}
           backgroundColor="#F8C660"
           textColor="#FFFFFF"
-          onPress={() =>
-            navigation.navigate("Details", {
-              itemId: 123,
-              title: "Preview",
-              firstText: `${4}/${20}`, 
-            })
-          }
+          onPress={handleStartQuiz}
+          disabled={isLoading}
         />
       </View>
     </View>

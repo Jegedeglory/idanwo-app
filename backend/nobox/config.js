@@ -1,15 +1,27 @@
 "use strict";
 // Object.defineProperty(exports, "__esModule", { value: true });
-exports.Nobox = exports.createKeyGroupSchema = exports.createRowSchema = exports.config = void 0;
-const nobox_client_1 = require("nobox-client");
+exports.Nobox =
+  exports.createKeyGroupSchema =
+  exports.createRowSchema =
+  exports.config =
+    void 0;
+const { getFunctions, getSchemaCreator } = require("nobox-client");
 const variables_1 = require("../config/variable");
+
+// Nobox configuration
 exports.config = {
-    endpoint: variables_1.NOBOX_ENDPOINT,
-    project: variables_1.NOBOX_PROJECT,
-    token: variables_1.NOBOX_TOKEN
+  endpoint: variables_1.NOBOX_ENDPOINT,
+  project: variables_1.NOBOX_PROJECT,
+  token: variables_1.NOBOX_TOKEN,
 };
-exports.createRowSchema = (0, nobox_client_1.getSchemaCreator)(exports.config, { type: "rowed" });
-exports.createKeyGroupSchema = (0, nobox_client_1.getSchemaCreator)(exports.config, {
-    type: "key-group",
+
+// Create schema creators
+exports.createRowSchema = getSchemaCreator(exports.config, {
+  type: "rowed",
 });
-exports.Nobox = (0, nobox_client_1.getFunctions)(exports.config);
+exports.createKeyGroupSchema = getSchemaCreator(exports.config, {
+  type: "key-group",
+});
+
+// Export Nobox functions
+exports.Nobox = getFunctions(exports.config);
